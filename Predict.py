@@ -3,6 +3,18 @@ import pyaudio
 import numpy as np
 from tensorflow.keras.models import load_model
 import librosa
+import keras
+import logging
+import tensorflow as tf
+
+
+# Suppress TensorFlow logging
+tf.get_logger().setLevel(logging.ERROR)  
+
+# Suppress Keras logging
+keras.utils.get_custom_objects()
+keras.backend.set_learning_phase(0)  
+
 
 RATE = 44100
 CHUNK = 1024
@@ -23,8 +35,9 @@ def classify_audio(audio_data, models):
     # feature = np.expand_dims(feature, axis=0)  
     class_names = []
     prediction = models.predict(feature)
+    print(prediction)
     class_idx = np.argmax(prediction)
-    print("Predicted class index:", class_idx)  # Debug: Print predicted class index
+    # print("Predicted class index:", class_idx)  # Debug: Print predicted class index
     
     # Check if the predicted index is within the range of CLASS_NAMES
     if class_idx < len(CLASS_NAMES):
