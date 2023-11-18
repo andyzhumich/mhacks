@@ -2,10 +2,40 @@ Kintone: Cloud-based teamwork platform for creating customized business applicat
 
 Hedera Hashgraph (Hedera): Decentralized public network aiming for secure, fast, and fair decentralized applications using Hashgraph technology.
 
+hashgraph = good for financial transaction cuz fast or some shit algorithm
+
 Flow: Blockchain platform specializing in gaming, digital collectibles, and NFTs, focusing on scalability and usability for developers.
 
+We should use streamlit for ez frontend but we can create our own if we want    
+
 https://mhacks-16.devpost.com/
+https://devpost.com/software/chess-lens-dl2ybp
+https://colab.google
+
+https://kaggle.com
+https://data.gov
+
+Ideas:
+(needs to have AI/ML)
+13* Making trip finder easier for idiots [itinerary generator]
+    - use chatgpt to generate an itinerary
+    - then from there, pick out the key words/things and automatically generate bookings?? 
 
 
+14*AI-driven environmental awareness tool for headphone users. 
+It uses real-time audio processing to alert users of potential hazards or important sounds in their environment (like sirens, alarms, or someone calling their name) while they are immersed in music.
 
-    
+
+*Use satalite imagery and data on cities to determine how to improve traffic in crowded locatoins    
+
+*
+
+# Here are some ideas for how AI could be used to improve housing costs:
+
+Predictive modeling for real estate development: AI algorithms can analyze data on demographics,
+employment trends, transportation plans, and zoning policies to predict future housing demand across different neighborhoods and price points.
+This allows developers to better target their investments.
+Every city has zones, spit out problems with each zone.
+
+For now ez: employmeent/salary & hosuing types in zones, determine what good / bad, suggest improvements in areas or what is good in an area.
+What would happen: Upload data, get a response as a "map" or as suggestions
