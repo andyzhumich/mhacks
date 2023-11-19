@@ -39,33 +39,37 @@ def record_5s_and_classify(device='cpu'):
     player = audio.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
     try:
-        stop_i = 0
-        danger = False
+        timer = 0
+        stop_timer = 0
         while True:
-            print(f"Recording audio for {DURATION} seconds...")
+            timer += 1
+            print(timer, 
+                  stop_timer)
             frames = []
 
             # Record audio for the specified duration
-            for i in range(0, int(RATE / CHUNK * DURATION)):
+            for i in range(0, 3):
+                stop_i = 0
                 audio_data = np.frombuffer(stream.read(CHUNK), dtype=np.int16)
                 inverse_audio = -audio_data  # Invert the audio signal for non-important sounds
                 cancelled_audio = audio_data + inverse_audio  # Mix the original and inversed audio
 
                 frames.append(audio_data)
-                if danger:
-                    stop_i = i + 5
-                if i < stop_i:
+
+                if timer < stop_timer:
                     player.write(audio_data.tobytes(), CHUNK)
+
                 else:
                     player.write(cancelled_audio.tobytes(), CHUNK)
 
 
 
 
+
             # Stop recording
-            print("Finished recording.")
-            stream.stop_stream()
-            stream.close()
+            # print("Finished recording.")
+            # stream.stop_stream()
+            # stream.close()
 
             # Convert the recorded audio frames to a single numpy array
             recorded_audio = np.concatenate(frames)
@@ -78,20 +82,22 @@ def record_5s_and_classify(device='cpu'):
 
             # Print the predicted label and the associated confidence score
             print("Predicted class:", text_lab, "with confidence:", score)
-            if text_lab[0] == "siren" or text_lab[0] == "gun_shot" or text_lab[0] == "car_horn" or text_lab[0] == "engine_idling":
-                print("DANGER")
-                danger = True
+            if text_lab[0] == "siren" or text_lab[0] == "gun_shot" or text_lab[0] == "car_horn":
+                if score > 0.5:
+                    print("DANGER")
+                    stop_timer = timer + 15
+
 
             # Wait for a short duration before starting the next recording
             # time.sleep(1)  # Adjust this value if needed
 
             # Reopen the audio stream for the next recording
-            stream = audio.open(format=FORMAT,
-                                channels=CHANNELS,
-                                rate=RATE,
-                                input=True,
-                                input_device_index=default_device_index,
-                                frames_per_buffer=CHUNK)
+            # stream = audio.open(format=FORMAT,
+            #                     channels=CHANNELS,
+            #                     rate=RATE,
+            #                     input=True,
+            #                     input_device_index=default_device_index,
+            #                     frames_per_buffer=CHUNK)
 
 
     except KeyboardInterrupt:
