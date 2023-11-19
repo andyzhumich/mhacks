@@ -36,8 +36,11 @@ def record_5s_and_classify(device='cpu'):
                         input=True,
                         input_device_index=default_device_index,
                         frames_per_buffer=CHUNK)
+    player = audio.open(format=pyaudio.paInt16, channels=1, rate=RATE, output=True, frames_per_buffer=CHUNK)
 
     try:
+        stop_i = 0
+        danger = False
         while True:
             print(f"Recording audio for {DURATION} seconds...")
             frames = []
@@ -45,7 +48,19 @@ def record_5s_and_classify(device='cpu'):
             # Record audio for the specified duration
             for i in range(0, int(RATE / CHUNK * DURATION)):
                 audio_data = np.frombuffer(stream.read(CHUNK), dtype=np.int16)
+                inverse_audio = -audio_data  # Invert the audio signal for non-important sounds
+                cancelled_audio = audio_data + inverse_audio  # Mix the original and inversed audio
+
                 frames.append(audio_data)
+                if danger:
+                    stop_i = i + 5
+                if i < stop_i:
+                    player.write(audio_data.tobytes(), CHUNK)
+                else:
+                    player.write(cancelled_audio.tobytes(), CHUNK)
+
+
+
 
             # Stop recording
             print("Finished recording.")
@@ -63,9 +78,12 @@ def record_5s_and_classify(device='cpu'):
 
             # Print the predicted label and the associated confidence score
             print("Predicted class:", text_lab, "with confidence:", score)
+            if text_lab[0] == "siren" or text_lab[0] == "gun_shot" or text_lab[0] == "car_horn" or text_lab[0] == "engine_idling":
+                print("DANGER")
+                danger = True
 
             # Wait for a short duration before starting the next recording
-            time.sleep(1)  # Adjust this value if needed
+            # time.sleep(1)  # Adjust this value if needed
 
             # Reopen the audio stream for the next recording
             stream = audio.open(format=FORMAT,
@@ -74,6 +92,7 @@ def record_5s_and_classify(device='cpu'):
                                 input=True,
                                 input_device_index=default_device_index,
                                 frames_per_buffer=CHUNK)
+
 
     except KeyboardInterrupt:
         print("Recording and classification interrupted.")
